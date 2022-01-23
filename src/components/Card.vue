@@ -55,7 +55,7 @@
 				}">
 				<div class="user">
 					<img :src="entry.image">
-					{{entry.username}}
+					{{entry.userName}}
 				</div>
 				{{ entry.score }}
 			</div>
