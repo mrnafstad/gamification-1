@@ -45,7 +45,7 @@
 			</span>
 			<div 
 				v-for="entry in leaderboard.entries" 
-				:key="entry.user_id" 
+				:key="entry.userId" 
 				class="leaderboard" 
 				:class="{
 					'first-place' : entry.rank === 1, 
@@ -76,7 +76,7 @@ const props = defineProps<{
 
 function isUsersEntry(entry: any) {
 	if (!props.leaderboard) return;
-	const isUserEntry = props.leaderboard.my_entry.user_id === entry.user_id;
+	const isUserEntry = props.leaderboard.myEntry.userId === entry.userId;
 	return isUserEntry
 }
 

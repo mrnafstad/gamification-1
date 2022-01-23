@@ -3,7 +3,7 @@ import { onMounted, reactive, ref, watch } from 'vue';
 import Category from './components/Category.vue';
 import Card from './components/Card.vue';
 import backend from './composables/fetcher';
-import { Product } from './business/interface';
+import { Leaderboard, Product } from './business/interface';
 
 const {
   categories,
@@ -14,7 +14,7 @@ const {
 
 const products = ref(getAllProducts());
 const selectedProduct = ref<Product | null>(null);
-const selectedProductLeaderboard = ref<any[] | null>(null)
+const selectedProductLeaderboard = ref<Leaderboard | null>(null)
 
 function showProduct(product: Product) {
   selectedProduct.value = product;
@@ -25,11 +25,8 @@ function closeProduct() {
 }
 
 watch(selectedProduct, () => {
-  console.log("watcher");
-  
   if (selectedProduct.value) {
     selectedProductLeaderboard.value = getProductLeaderBoard(selectedProduct.value.id) || null;
-  console.log(selectedProductLeaderboard.value)
     return;
   } 
   selectedProductLeaderboard.value = null;

@@ -2,7 +2,7 @@ import { ref } from 'vue';
 
 import categoriesJSON from '../assets/backend/productcategories.json?raw'
 import leaderBoardsJSON from '../assets/backend/leaderBoards.json?raw'
-import { Product, ProductCategory } from '../business/interface';
+import { Entry, Leaderboard, Product, ProductCategory } from '../business/interface';
 
 export default () => {
     const categories = ref<ProductCategory[]>(JSON.parse(categoriesJSON).map((item:any) => {
@@ -23,24 +23,38 @@ export default () => {
             })
         }
     }));
-    const leaderBoards = ref<any[]>(JSON.parse(leaderBoardsJSON));
+    const leaderBoards = ref<Leaderboard[]>(JSON.parse(leaderBoardsJSON).map((leaderBoard: any): Leaderboard => {
+        return {
+            category: leaderBoard.category,
+            scope: leaderBoard.scope,
+            productId: leaderBoard.product_id,
+            myEntry: toEntry(leaderBoard.my_entry),
+            entries: leaderBoard.entries.map((entry: any): Entry => {
+                return toEntry(entry);
+            })
+        }
+    }));
 
-    function getProductsForCategory(categoryId: string) {
-        return categories.value.find((category: any) => category.id === categoryId).products;
+    function toEntry(entry: any): Entry {
+        return {
+            userId: entry.user_id,
+            userName: entry.username,
+            image: entry.image,
+            rank: entry.rank,
+            score: entry.score
+        }
+    }
+    
+    function getProductLeaderBoard(productId: number): Leaderboard | null {
+        const leaderboard =  leaderBoards.value.find((leaderBoard: Leaderboard) => 
+            leaderBoard.productId === productId
+        )
+
+        return leaderboard || null;
     }
 
-    function getProductLeaderBoard(productId: number) {
-        return leaderBoards.value.find((leaderBoard: any) => {
-            console.log(leaderBoard, productId);
-            
-            return leaderBoard.product_id === productId
-        })
-    }
-
-    function getAllProducts() {
-        const products = [];
-        console.log(categories);
-        
+    function getAllProducts(): Product[] {
+        const products: Product[] = [];
         categories.value.forEach(category => products.push(...category.products))
         return products;
     }
@@ -48,7 +62,6 @@ export default () => {
     return {
         categories,
         leaderBoards,
-        getProductsForCategory,
         getProductLeaderBoard,
         getAllProducts,
     }
